@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Circles Hero</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .hero-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+        }
+
+        .circle {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            transition: all 0.7s cubic-bezier(0.25, 0.1, 0.25, 1);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .circle-1 {
+            background-color: #3498db;
+            top: 20%;
+            left: 20%;
+        }
+
+        .circle-2 {
+            background-color: #e74c3c;
+            top: 20%;
+            right: 20%;
+        }
+
+        .circle-3 {
+            background-color: #2ecc71;
+            bottom: 20%;
+            left: 20%;
+        }
+
+        .circle-4 {
+            background-color: #f39c12;
+            bottom: 20%;
+            right: 20%;
+        }
+
+        .hero-content {
+            position: absolute;
+            text-align: center;
+            color: white;
+            z-index: 10;
+            transition: all 0.7s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hero-container">
+        <div class="hero-content">
+            <h1 class="hero-title">Welcome to Pha5e</h1>
+            <p class="hero-subtitle">Interactive Circular Experience</p>
+        </div>
+        <div class="circle circle-1" data-circle="1">Circle 1</div>
+        <div class="circle circle-2" data-circle="2">Circle 2</div>
+        <div class="circle circle-3" data-circle="3">Circle 3</div>
+        <div class="circle circle-4" data-circle="4">Circle 4</div>
+    </div>
+
+    <script>
+        class CircleInteraction {
+            constructor() {
+                this.container = document.querySelector('.hero-container');
+                this.heroContent = document.querySelector('.hero-content');
+                this.circles = document.querySelectorAll('.circle');
+                this.activeCircle = null;
+
+                this.initializeListeners();
+            }
+
+            initializeListeners() {
+                this.circles.forEach(circle => {
+                    circle.addEventListener('mouseover', () => this.moveCircleToCenter(circle));
+                });
+
+                this.container.addEventListener('mouseleave', () => this.resetCircles());
+            }
+
+            moveCircleToCenter(targetCircle) {
+                // If there's already an active circle, reset it
+                if (this.activeCircle && this.activeCircle !== targetCircle) {
+                    this.resetCircle(this.activeCircle);
+                }
+
+                // Move the target circle to center
+                targetCircle.style.position = 'absolute';
+                targetCircle.style.top = '50%';
+                targetCircle.style.left = '50%';
+                targetCircle.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                targetCircle.style.zIndex = '20';
+
+                // Dim other circles
+                this.circles.forEach(circle => {
+                    if (circle !== targetCircle) {
+                        circle.style.opacity = '0.3';
+                    }
+                });
+
+                // Update active circle
+                this.activeCircle = targetCircle;
+
+                // Optional: Change hero content or perform other interactions
+                this.heroContent.style.opacity = '0.3';
+            }
+
+            resetCircle(circle) {
+                // Reset specific circle to original position
+                circle.style.top = circle.classList.contains('circle-1') || circle.classList.contains('circle-2')
+                    ? '20%' : '80%';
+
+                circle.style.left = circle.classList.contains('circle-1') || circle.classList.contains('circle-3')
+                    ? '20%' : '80%';
+
+                circle.style.transform = 'translate(0, 0) scale(1)';
+                circle.style.zIndex = '10';
+            }
+
+            resetCircles() {
+                // Reset all circles to original positions
+                this.circles.forEach(circle => {
+                    this.resetCircle(circle);
+                    circle.style.opacity = '1';
+                });
+
+                // Reset hero content
+                this.heroContent.style.opacity = '1';
+                this.activeCircle = null;
+            }
+        }
+
+        // Initialize the interaction
+        document.addEventListener('DOMContentLoaded', () => {
+            new CircleInteraction();
+        });
+    </script>
+</body>
+
+</html>
